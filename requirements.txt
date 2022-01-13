@@ -1,0 +1,9 @@
+Flask==2.0.2
+scikit-learn
+tensorflow-cpu
+pydub==0.25.1
+librosa==0.8.1
+gunicorn==20.1.0
+joblib
+flask-cors
+mysql-connector-python==8.0.20
