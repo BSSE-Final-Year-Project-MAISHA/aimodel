@@ -16,7 +16,8 @@ def preprocess(audio_file):
 	"""
 	Creates mel-spectrogram features from audio data
 	"""
-	audio = AudioSegment(audio_file)
+	#audio = AudioSegment(audio_file)
+	audio = AudioSegment.from_file(audio_file, format="wav")
 	audio_chunks = make_chunks(audio, 15000)
 	features = []
 
