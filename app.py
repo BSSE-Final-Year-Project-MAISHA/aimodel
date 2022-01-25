@@ -39,7 +39,8 @@ dbconfig = {"host":"us-cdbr-east-04.cleardb.com", "user":"b1f025aacd34d8", "pass
 cnx = mysql.connector.connect(pool_name = "model_db_pool",pool_size = 3, **dbconfig)
 
 @app.route("/", methods=["GET", "POST"])
-@cross_origin()
+# @cross_origin()
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization', 'Content-Length', 'Origin', 'Host'])
 def index():
 	results=""
 	model = load_model("model.h5")
