@@ -5,11 +5,16 @@
     <title>Depression Detection in Python</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}" />
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
-<div id="depressionScoreContainer">
-	<h1>PHQ Score for {{id}}</h1>
-	<p id="depressionScore">{{ results }}</p>
+<div id="depressionScoreContainer" class="w3-card-4" style="width:50%;">
+	<header class="w3-container w3-blue">
+		<h1>Diagnosis</h1>
+	</header>
+	<br>
+	<br>
+	<p id="depressionScore">{{ status }}</p>
 </div>
 </body>
 </html>

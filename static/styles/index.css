@@ -1,9 +1,16 @@
+html { 
+  background: url(bg.jpg) no-repeat center fixed; 
+  background-size: cover;
+}
+
 h1, p, input {
     font-family: 'Lato', sans-serif;
 }
 
 #audioContainer {
-    margin: 20px;
+    margin: auto;
+	text-align: center;
+	padding: 70px 0;
 }
 
 #submitButton {
@@ -20,10 +27,13 @@ h1, p, input {
 }
 
 #depressionScoreContainer {
-    margin-top: 20px;
+    margin: auto;
+	text-align: center;
+	padding: 70px 0;
 }
 
 #depressionScore {
-    font-size: 18px;
+    font-size: 20px;
+	font-weight: bold;
     width: 500px;
 }

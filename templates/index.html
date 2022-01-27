@@ -5,14 +5,19 @@
     <title>Depression Detection in Python</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}" />
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
-<div id="audioContainer">
-    <h1>Upload new File</h1>
+<div id="audioContainer" class="w3-card-4" style="width:50%;">
+	<header class="w3-container w3-blue">
+		<h1>Upload audio file</h1>
+	</header>
+	<br>
+	<br>
     <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file"/>
-		<input type="text" name="id"/>
+        <input type="file"  accept="audio/*" capture name="file"/>
         <br>
+		<br>
         <input type="submit" id="submitButton" value="Analyze"/>
     </form>
 </div>

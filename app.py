@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect
-from flask_cors import CORS, cross_origin
 
 import numpy as np
 import joblib
@@ -8,8 +7,6 @@ from pydub.utils import make_chunks
 import librosa  
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
-import mysql.connector
-import mysql.connector.pooling
 
 
 def preprocess(audio_file):
@@ -17,7 +14,6 @@ def preprocess(audio_file):
 	Creates mel-spectrogram features from audio data
 	"""
 	audio = AudioSegment(audio_file)
-# 	audio = AudioSegment.from_file(audio_file)
 	audio_chunks = make_chunks(audio, 15000)
 	features = []
 
@@ -32,17 +28,11 @@ def preprocess(audio_file):
 
 
 app = Flask(__name__)
-CORS(app)
-
-#Create a database connection pool
-dbconfig = {"host":"us-cdbr-east-04.cleardb.com", "user":"b1f025aacd34d8", "password":"0b41da97", "database":"heroku_f4a69e59281e2c9"}
-cnx = mysql.connector.connect(pool_name = "model_db_pool",pool_size = 3, **dbconfig)
 
 @app.route("/", methods=["GET", "POST"])
-# @cross_origin()
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization', 'Content-Length', 'Origin', 'Host'])
 def index():
 	results=""
+	status=""
 	model = load_model("model.h5")
 	scaler = joblib.load('scaler.pkl')
 
@@ -53,7 +43,6 @@ def index():
 
 		#Get user audio file and id
 		file = request.files["file"]
-		user_id = request.form["id"]
 
 		if file.filename == "":
 			return redirect(request.url)
@@ -61,22 +50,27 @@ def index():
 		if file:
 			#Extract features and run inference on the audio file
 			feature = preprocess(file)
+
+			if feature.shape[2] != 469:
+				feature = np.resize(feature, (feature.shape[0], 80, 469))
+
 			for sample in range(feature.shape[0]):
 				feature[sample] = scaler.transform(feature[sample])
 			predictions = model.predict(feature)
 			results = round(np.mean(predictions))
 
-			#Get a connection from the database connection pool
-			mydb = mysql.connector.connect(pool_name=cnx.pool_name)
-			mycursor = mydb.cursor()
+			if results <= 4:
+				status = f'PHQ score is {results}. Your depression is minimal'
+			elif results <= 9:
+				status = f'PHQ score is {results}. Your depression is mild'
+			elif results <= 14:
+				status = f'PHQ score is {results}. Your depression is moderate'
+			elif results <= 19:
+				status = f'PHQ score is {results}. Your depression is moderately severe'
+			else:
+				status = f'PHQ score is {results}. Your depression is severe'
 
-			#Insert the predicted PHQ score into the database
-			sql = "INSERT INTO diagnosis_report (phq_score, users_user_id) VALUES (%s, %s)"
-			val = (str(results), str(user_id))
-			mycursor.execute(sql, val)
-			mydb.commit()
-
-			return render_template('results.html', results=results, id=user_id)
+			return render_template('results.html', status=status)
 
 	return render_template('index.html')
 
